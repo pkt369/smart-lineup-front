@@ -69,10 +69,10 @@ const Footer = () => {
                             </li>
                             <li>
                                 <a
-                                    href="#"
+                                    href="/privacy"
                                     className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
                                 >
-                                    개인정보처리방침
+                                    개인정보처리방침 및 이용약관
                                 </a>
                             </li>
                         </ul>

@@ -15,13 +15,15 @@ import {
     XCircle,
     RefreshCw,
     AlertTriangle,
+    AlertOctagon,
+    UserX,
 } from "lucide-react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import axios from "axios"
 import config from "../../config"
-import PaymentModal from "../payment/PaymentModal"
+import PaymentModal from "../../components/payment/PaymentModal"
 import CardShape from "../../components/payment/CardShape"
-import { BillingStatus, SubscriptionInfo } from "../../components/types"
+import { BillingStatus, type SubscriptionInfo } from "../../components/types"
 import { useAuth } from "../../components/AuthContext"
 import { usePlanTypeInfo } from "../../components/payment/PlanTypeInfo"
 
@@ -45,8 +47,12 @@ const SettingsPage: React.FC = () => {
     const [paymentHistory, setPaymentHistory] = useState<any[]>([])
     const [isProcessing, setIsProcessing] = useState(false)
 
-    const { username, email, isAuthenticated, authLoading } = useAuth()
+    const { username, email, isAuthenticated, authLoading, logout } = useAuth()
     const { data: planTypeInfo } = usePlanTypeInfo(true)
+
+    // 회원 탈퇴 모달 상태
+    const [showWithdrawModal, setShowWithdrawModal] = useState(false)
+    const [isWithdrawing, setIsWithdrawing] = useState(false)
 
     useEffect(() => {
         setIsLoading(true)
@@ -61,7 +67,7 @@ const SettingsPage: React.FC = () => {
             setNewUsername(username ?? "")
             setIsLoading(false)
         }
-    }, [authLoading, isAuthenticated])
+    }, [authLoading, isAuthenticated, navigate, username, email])
 
     // 모달 상태
     const [confirmModal, setConfirmModal] = useState({
@@ -140,7 +146,7 @@ const SettingsPage: React.FC = () => {
             await axios.put(
                 `${config.backend}/user/profile`,
                 {
-                    name: newUsername,
+                    username: newUsername,
                 },
                 {
                     withCredentials: true,
@@ -166,6 +172,37 @@ const SettingsPage: React.FC = () => {
             })
         } finally {
             setIsSaving(false)
+        }
+    }
+
+    // 회원 탈퇴 처리
+    const handleWithdraw = async () => {
+        try {
+            setIsWithdrawing(true)
+
+            await axios.delete(`${config.backend}/user/withdraw`, {
+                withCredentials: true,
+            })
+
+            // 탈퇴 성공 시 로그아웃 처리
+            await logout()
+
+            // 홈페이지로 리다이렉트
+            navigate("/")
+
+            // 성공 메시지 (선택적)
+            alert("회원 탈퇴가 완료되었습니다. 그동안 서비스를 이용해 주셔서 감사합니다.")
+        } catch (error) {
+            console.error("회원 탈퇴에 실패했습니다:", error)
+            setAlertModal({
+                isOpen: true,
+                title: "오류",
+                message: "회원 탈퇴에 실패했습니다. 다시 시도해주세요.",
+                type: "error",
+            })
+        } finally {
+            setIsWithdrawing(false)
+            setShowWithdrawModal(false)
         }
     }
 
@@ -309,59 +346,87 @@ const SettingsPage: React.FC = () => {
     // 프로필 정보 컨텐츠
     const renderProfileContent = () => {
         return (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-                <h2 className="text-lg font-semibold mb-4 flex items-center">
-                    <User className="h-5 w-5 mr-2 text-blue-500" />
-                    프로필 정보
+            <div className="space-y-6">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+                    <h2 className="text-lg font-semibold mb-4 flex items-center">
+                        <User className="h-5 w-5 mr-2 text-blue-500" />
+                        프로필 정보
+                    </h2>
+
+                    <form onSubmit={handleUpdateUsername} className="space-y-4">
+                        <div>
+                            <label htmlFor="username" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+                                사용자 이름
+                            </label>
+                            <input
+                                type="text"
+                                id="username"
+                                value={newUsername}
+                                onChange={(e) => setNewUsername(e.target.value)}
+                                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                placeholder="사용자 이름"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">이메일</label>
+                            <input
+                                type="email"
+                                value={profile?.email || ""}
+                                readOnly
+                                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white cursor-not-allowed"
+                            />
+                            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">이메일은 변경할 수 없습니다.</p>
+                        </div>
+
+                        <div className="flex justify-end">
+                            <button
+                                type="submit"
+                                disabled={isSaving}
+                                className={`px-4 py-2 ${isSaving ? "bg-blue-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+                                    } text-white rounded-md flex items-center`}
+                            >
+                                {isSaving ? (
+                                    <>
+                                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                        저장 중...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="h-4 w-4 mr-2" />
+                                        변경사항 저장
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                {/* 회원 탈퇴 섹션을 별도의 카드로 분리 */}
+                {renderWithdrawSection()}
+            </div>
+        )
+    }
+
+    // 회원 탈퇴 섹션을 별도의 함수로 분리합니다.
+    const renderWithdrawSection = () => {
+        return (
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-red-200 dark:border-red-900/30">
+                <h2 className="text-lg font-semibold mb-4 flex items-center text-red-600 dark:text-red-400">
+                    <UserX className="h-5 w-5 mr-2" />
+                    회원 탈퇴
                 </h2>
-
-                <form onSubmit={handleUpdateUsername} className="space-y-4">
-                    <div>
-                        <label htmlFor="username" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-                            사용자 이름
-                        </label>
-                        <input
-                            type="text"
-                            id="username"
-                            value={newUsername}
-                            onChange={(e) => setNewUsername(e.target.value)}
-                            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                            placeholder="사용자 이름"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">이메일</label>
-                        <input
-                            type="email"
-                            value={profile?.email || ""}
-                            readOnly
-                            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white cursor-not-allowed"
-                        />
-                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">이메일은 변경할 수 없습니다.</p>
-                    </div>
-
-                    <div className="flex justify-end">
-                        <button
-                            type="submit"
-                            disabled={isSaving}
-                            className={`px-4 py-2 ${isSaving ? "bg-blue-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
-                                } text-white rounded-md flex items-center`}
-                        >
-                            {isSaving ? (
-                                <>
-                                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                    저장 중...
-                                </>
-                            ) : (
-                                <>
-                                    <Save className="h-4 w-4 mr-2" />
-                                    변경사항 저장
-                                </>
-                            )}
-                        </button>
-                    </div>
-                </form>
+                <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm">
+                    회원 탈퇴 시 모든 데이터가 삭제되며, 이 작업은 되돌릴 수 없습니다. 라인 정보, 대기열 데이터 등 모든 정보가
+                    영구적으로 삭제됩니다.
+                </p>
+                <button
+                    onClick={() => setShowWithdrawModal(true)}
+                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md flex items-center"
+                >
+                    <UserX className="h-4 w-4 mr-2" />
+                    회원 탈퇴
+                </button>
             </div>
         )
     }
@@ -471,7 +536,11 @@ const SettingsPage: React.FC = () => {
                             <CreditCard className="h-5 w-5 text-gray-500 mr-2" />
                             <span>결제 예정 금액</span>
                         </div>
-                        <span className="font-medium">{planType === "연간" ? `₩${planTypeInfo?.annual.price.toLocaleString()}/연` : `₩${planTypeInfo?.monthly.price.toLocaleString()}/월`}</span>
+                        <span className="font-medium">
+                            {planType === "연간"
+                                ? `₩${planTypeInfo?.annual.price.toLocaleString()}/연`
+                                : `₩${planTypeInfo?.monthly.price.toLocaleString()}/월`}
+                        </span>
                     </div>
                 </div>
 
@@ -519,7 +588,8 @@ const SettingsPage: React.FC = () => {
                                     setConfirmModal({
                                         isOpen: true,
                                         title: "구독 플랜 변경",
-                                        message: `${planType === "연간" ? "월간" : "연간"} 요금제로 변경하시겠습니까? 다음 결제 시점부터 적용됩니다.`,
+                                        message: `${planType === "연간" ? "월간" : "연간"
+                                            } 요금제로 변경하시겠습니까? 다음 결제 시점부터 적용됩니다.`,
                                         type: "warning",
                                         action: "change",
                                     })
@@ -709,6 +779,60 @@ const SettingsPage: React.FC = () => {
                 </div>
             </div>
 
+            {/* 회원 탈퇴 확인 모달 */}
+            {showWithdrawModal && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                    style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
+                >
+                    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full shadow-xl">
+                        <div className="flex justify-center mb-4">
+                            <div className="rounded-full bg-red-100 dark:bg-red-900/30 p-3">
+                                <AlertOctagon className="h-8 w-8 text-red-500" />
+                            </div>
+                        </div>
+
+                        <h3 className="text-xl font-bold mb-4 text-center text-red-600 dark:text-red-400">회원 탈퇴 확인</h3>
+                        <p className="text-gray-600 dark:text-gray-400 mb-6 text-center">
+                            정말로 회원 탈퇴를 진행하시겠습니까? 모든 데이터가 영구적으로 삭제되며, 이 작업은 되돌릴 수 없습니다.
+                        </p>
+
+                        <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-6">
+                            <p className="text-sm text-red-800 dark:text-red-300 font-medium">다음 데이터가 모두 삭제됩니다:</p>
+                            <ul className="list-disc pl-5 mt-2 text-sm text-red-700 dark:text-red-300">
+                                <li>모든 라인 정보</li>
+                                <li>모든 대기열 데이터</li>
+                                <li>계정 정보 및 설정</li>
+                                <li>카드 정보 (구독은 자동으로 취소됩니다)</li>
+                            </ul>
+                        </div>
+
+                        <div className="flex justify-end space-x-3">
+                            <button
+                                onClick={() => setShowWithdrawModal(false)}
+                                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-md"
+                            >
+                                취소
+                            </button>
+                            <button
+                                onClick={handleWithdraw}
+                                disabled={isWithdrawing}
+                                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md flex items-center"
+                            >
+                                {isWithdrawing ? (
+                                    <>
+                                        <Loader2 className="animate-spin h-4 w-4 mr-2" />
+                                        처리 중...
+                                    </>
+                                ) : (
+                                    "회원 탈퇴"
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* 알림 모달 */}
             <PaymentModal
                 isOpen={alertModal.isOpen}
@@ -737,4 +861,3 @@ const SettingsPage: React.FC = () => {
 }
 
 export default SettingsPage
-

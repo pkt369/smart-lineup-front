@@ -21,6 +21,7 @@ import AttendeeFullPage from './pages/attendee/AttendeeFullPage';
 import AttendeeView from './pages/attendee/AttendeeView';
 import CancelPage from './pages/attendee/CancelPage';
 import BetaInfoPage from './pages/beta/BetaInfoPage';
+import PrivacyPage from './pages/privacy/PrivacyPage';
 
 function App() {
     return (
@@ -47,7 +48,8 @@ function App() {
                         <Route path="/attendee/full" element={<AttendeeFullPage />} />
                         <Route path="/attendee/view/:uuid" element={<AttendeeView />} />
                         <Route path="/cancel" element={<CancelPage />} />
-                        <Route path='/beta' element={< BetaInfoPage />} />
+                        <Route path='/beta' element={<BetaInfoPage />} />
+                        <Route path='/privacy' element={<PrivacyPage />} />
                     </Routes>
                 </DarkModeProvider>
             </BrowserRouter>
