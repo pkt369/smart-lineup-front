@@ -4,20 +4,11 @@ import type React from "react"
 import { useState } from "react"
 import { useDarkMode } from "../../components/DarkModeContext"
 import { Shield, FileText, ArrowLeft } from "lucide-react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 const StandalonePrivacy: React.FC = () => {
     const { darkMode } = useDarkMode()
     const [activeTab, setActiveTab] = useState<"privacy" | "terms">("privacy")
-    const navigate = useNavigate()
-    const [agreed, setAgreed] = useState(false)
-
-    const handleAgree = () => {
-        // 동의 처리 로직
-        setAgreed(true)
-        // 동의 후 홈페이지로 리다이렉트
-        navigate("/")
-    }
 
     return (
         <div className={darkMode ? "dark" : ""}>
