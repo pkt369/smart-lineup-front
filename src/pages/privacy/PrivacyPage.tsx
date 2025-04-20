@@ -1,10 +1,10 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useDarkMode } from "../../components/DarkModeContext"
 import { Shield, FileText } from "lucide-react"
+import Navbar from "../../components/Navbar"
 
 const PrivacyPage: React.FC = () => {
     const { darkMode } = useDarkMode()
@@ -13,6 +13,7 @@ const PrivacyPage: React.FC = () => {
     return (
         <div className={darkMode ? "dark" : ""}>
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+                <Navbar />
                 <div className="container mx-auto px-4 py-12">
                     <div className="max-w-4xl mx-auto">
                         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 md:p-8 border border-gray-200 dark:border-gray-700">
@@ -58,6 +59,7 @@ const PrivacyPage: React.FC = () => {
                                             상점 참여 시 수집 항목: 방문자 이름, 전화번호, 대기 시간, 대기 순서, 운영자 메모(선택적 수집)
                                         </li>
                                         <li>수집 방법: 웹 애플리케이션을 통한 직접 입력</li>
+                                        <li>결제 시 수집 항목: 결제 수단, 카드 뒷자리 4자리 (식별 목적)</li>
                                     </ul>
 
                                     <h2 className="text-xl font-semibold mt-8 mb-4">2. 개인정보의 수집 및 이용 목적</h2>
@@ -89,6 +91,81 @@ const PrivacyPage: React.FC = () => {
                                     <h2 className="text-xl font-semibold mt-8 mb-4">7. 개인정보 보호 책임자</h2>
                                     <p className="mb-2">책임자: 박세준 (운영자)</p>
                                     <p className="mb-6">이메일: pkt0758@gmail.com</p>
+
+                                    <h2 className="text-xl font-semibold mt-8 mb-4">8. 수집한 개인정보의 위탁</h2>
+                                    <p className="mb-4">
+                                        Smart Lineup은 서비스 제공을 위해 아래와 같이 개인정보 처리 업무를 외부에 위탁하고 있으며, 관련
+                                        법령에 따라 개인정보가 안전하게 관리될 수 있도록 필요한 조치를 하고 있습니다.
+                                    </p>
+                                    <div className="overflow-x-auto mb-6">
+                                        <table className="table-auto w-full text-sm border border-gray-300 dark:border-gray-600">
+                                            <thead>
+                                                <tr className="bg-gray-100 dark:bg-gray-700">
+                                                    <th className="border px-4 py-2">수탁 업체</th>
+                                                    <th className="border px-4 py-2">위탁 내용</th>
+                                                    <th className="border px-4 py-2">보유 및 이용 기간</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td className="border px-4 py-2">Supabase Inc.</td>
+                                                    <td className="border px-4 py-2">사용자 계정 정보, 방문자 정보 등 데이터베이스 관리</td>
+                                                    <td className="border px-4 py-2">회원 탈퇴 시까지 또는 위탁 계약 종료 시까지</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="border px-4 py-2">Toss Payments</td>
+                                                    <td className="border px-4 py-2">결제 처리 및 거래 내역 관리</td>
+                                                    <td className="border px-4 py-2">관련 법령에 따른 보관 기간 동안</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="border px-4 py-2">Render.com</td>
+                                                    <td className="border px-4 py-2">백엔드 서버 호스팅</td>
+                                                    <td className="border px-4 py-2">회원 탈퇴 시까지 또는 위탁 계약 종료 시까지</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="border px-4 py-2">Google LLC</td>
+                                                    <td className="border px-4 py-2">이메일 발송 서비스</td>
+                                                    <td className="border px-4 py-2">회원 탈퇴 시까지 또는 위탁 계약 종료 시까지</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <h2 className="text-xl font-semibold mt-8 mb-4">9. 쿠키(Cookie)의 사용</h2>
+                                    <p className="mb-4">
+                                        Smart Lineup은 서비스의 품질 향상과 사용자 편의 제공을 위해 <strong>Google Analytics</strong>를
+                                        사용하여 방문자의 웹사이트 이용 정보를 분석하고 있습니다. Google Analytics는{" "}
+                                        <strong>쿠키를 사용하여</strong> 사이트 방문자의 익명화된 정보를 수집합니다. 수집된 정보는{" "}
+                                        <strong>Google</strong>에 의해 처리되며, <strong>개인 식별 정보를 포함하지 않습니다</strong>. 이
+                                        정보를 통해 서비스 개선과 최적화를 목표로 사용됩니다.
+                                    </p>
+                                    <ul className="list-disc pl-6 mb-6 space-y-2">
+                                        <li>
+                                            <strong>수집 항목</strong>: 방문한 페이지, 시간, 브라우저 정보 등
+                                        </li>
+                                        <li>
+                                            <strong>수집 목적</strong>: 서비스 개선, 사용자 행동 분석
+                                        </li>
+                                        <li>
+                                            <strong>보유 기간</strong>: Google에서 데이터를 보유하는 기간은 Google의 개인정보처리방침에
+                                            따릅니다.
+                                        </li>
+                                        <li>
+                                            <strong>쿠키 저장 거부</strong>: 사용자는 브라우저 설정을 통해 쿠키 저장을 거부할 수 있습니다.
+                                        </li>
+                                    </ul>
+                                    <p className="mb-6">
+                                        Google Analytics의 개인정보처리방침은{" "}
+                                        <a
+                                            href="https://policies.google.com/privacy"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-blue-600 hover:underline dark:text-blue-400"
+                                        >
+                                            여기
+                                        </a>
+                                        에서 확인하실 수 있습니다.
+                                    </p>
 
                                     <div className="mt-8 text-sm text-gray-500 dark:text-gray-400">
                                         이 문서는 2025년 4월 기준 작성되었으며, 관련 법령 개정 또는 서비스 변경 시 사전 고지 후 변경될 수

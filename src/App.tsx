@@ -22,12 +22,13 @@ import AttendeeView from './pages/attendee/AttendeeView';
 import CancelPage from './pages/attendee/CancelPage';
 import BetaInfoPage from './pages/beta/BetaInfoPage';
 import PrivacyPage from './pages/privacy/PrivacyPage';
-import StandalonePrivacy from './pages/privacy/StandalonePrivacy';
+import TrackPageView from './components/util/TrackPageView';
 
 function App() {
     return (
         <AuthProvider>
             <BrowserRouter>
+                <TrackPageView />
                 <DarkModeProvider>
                     <Routes>
                         <Route path='/' element={<HomePage />} />
@@ -41,17 +42,16 @@ function App() {
                         <Route path='/find/password/reset' element={<ChangePasswordPage />} />
                         <Route path='/pricing' element={<PricingPage />} />
                         {/* <Route path='/payment' element={<PaymentPage/>} /> */}
-                        <Route path='/payment' element={<BetaInfoPage/>} />
+                        <Route path='/payment' element={<BetaInfoPage />} />
                         <Route path='/payment/success' element={<PaymentProcessing />} />
                         <Route path='/payment/pay/success' element={<PaymentSuccessPage />} />
-                        <Route path='/settings' element={<SettingsPage/>}/>
+                        <Route path='/settings' element={<SettingsPage />} />
                         <Route path="/feedback" element={<FeedbackPage />} />
                         <Route path="/attendee/full" element={<AttendeeFullPage />} />
                         <Route path="/attendee/view/:uuid" element={<AttendeeView />} />
                         <Route path="/cancel" element={<CancelPage />} />
                         <Route path='/beta' element={<BetaInfoPage />} />
                         <Route path='/policy/privacy' element={<PrivacyPage />} />
-                        <Route path="/policy/privacy-standalone" element={<StandalonePrivacy />} />
                     </Routes>
                 </DarkModeProvider>
             </BrowserRouter>
