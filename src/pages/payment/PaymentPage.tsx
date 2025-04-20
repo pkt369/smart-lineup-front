@@ -10,7 +10,7 @@ import config from "../../config"
 import axios from "axios"
 import { useAuth } from "../../components/AuthContext"
 import CardShape from "../../components/payment/CardShape"
-import PaymentModal from "./PaymentModal"
+import PaymentModal from "../../components/payment/PaymentModal"
 import { BillingStatus, type SubscriptionInfo } from "../../components/types"
 import { usePlanTypeInfo } from "../../components/payment/PlanTypeInfo"
 
