@@ -22,6 +22,7 @@ import AttendeeView from './pages/attendee/AttendeeView';
 import CancelPage from './pages/attendee/CancelPage';
 import BetaInfoPage from './pages/beta/BetaInfoPage';
 import PrivacyPage from './pages/privacy/PrivacyPage';
+import StandalonePrivacy from './pages/privacy/StandalonePrivacy';
 
 function App() {
     return (
@@ -49,7 +50,8 @@ function App() {
                         <Route path="/attendee/view/:uuid" element={<AttendeeView />} />
                         <Route path="/cancel" element={<CancelPage />} />
                         <Route path='/beta' element={<BetaInfoPage />} />
-                        <Route path='/privacy' element={<PrivacyPage />} />
+                        <Route path='/policy/privacy' element={<PrivacyPage />} />
+                        <Route path="/policy/privacy-standalone" element={<StandalonePrivacy />} />
                     </Routes>
                 </DarkModeProvider>
             </BrowserRouter>

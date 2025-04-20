@@ -1,19 +1,33 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useDarkMode } from "../../components/DarkModeContext"
-import { Shield, FileText } from "lucide-react"
+import { Shield, FileText, ArrowLeft } from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
 
-const PrivacyPage: React.FC = () => {
+const StandalonePrivacy: React.FC = () => {
     const { darkMode } = useDarkMode()
     const [activeTab, setActiveTab] = useState<"privacy" | "terms">("privacy")
+    const navigate = useNavigate()
+    const [agreed, setAgreed] = useState(false)
+
+    const handleAgree = () => {
+        // 동의 처리 로직
+        setAgreed(true)
+        // 동의 후 홈페이지로 리다이렉트
+        navigate("/")
+    }
 
     return (
         <div className={darkMode ? "dark" : ""}>
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
                 <div className="container mx-auto px-4 py-12">
+                    <Link to="/" className="inline-flex items-center text-blue-500 hover:text-blue-600 mb-8">
+                        <ArrowLeft className="h-4 w-4 mr-1" />
+                        홈으로 돌아가기
+                    </Link>
+
                     <div className="max-w-4xl mx-auto">
                         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 md:p-8 border border-gray-200 dark:border-gray-700">
                             {/* 탭 네비게이션 */}
@@ -167,4 +181,4 @@ const PrivacyPage: React.FC = () => {
     )
 }
 
-export default PrivacyPage
+export default StandalonePrivacy
