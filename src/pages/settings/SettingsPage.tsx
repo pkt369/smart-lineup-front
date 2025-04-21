@@ -146,7 +146,7 @@ const SettingsPage: React.FC = () => {
             await axios.put(
                 `${config.backend}/user/profile`,
                 {
-                    username: newUsername,
+                    name: newUsername,
                 },
                 {
                     withCredentials: true,
