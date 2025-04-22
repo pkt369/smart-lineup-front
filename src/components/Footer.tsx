@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/images/logo.png";
+import flowsurfing from "../assets/images/flowsurfing.png";
 
 const Footer = () => {
     return (
@@ -8,7 +8,7 @@ const Footer = () => {
                 <div className="grid md:grid-cols-4 gap-8">
                     <div>
                         <h3 className="text-lg font-bold mb-4">FlowSurfing</h3>
-                        <img src={logo} alt="logo" className="w-10 h-10" />
+                        <img src={flowsurfing} alt="logo" className="w-10 h-10" />
                         <div className="flex space-x-4">
                             <Link to="#" className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
                                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
