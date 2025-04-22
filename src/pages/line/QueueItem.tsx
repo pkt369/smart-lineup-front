@@ -8,6 +8,7 @@ import { type Queue, QueueStatus } from "../../components/types"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { useState } from "react"
+import { DateTime } from "luxon"
 
 interface QueueItemProps {
   id: string
@@ -54,24 +55,27 @@ const QueueItem: React.FC<QueueItemProps> = ({
   }
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const created = DateTime.fromISO(dateString, { zone: "utc" }).setZone(userTimeZone);
+    return created.toLocaleString({ hour: "2-digit", minute: "2-digit" })
   }
 
   const getWaitTime = (dateString: string) => {
-    const created = new Date(dateString)
-    const now = new Date()
-    const diffMs = now.getTime() - created.getTime()
-    const diffMins = Math.floor(diffMs / 60000)
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const created = DateTime.fromISO(dateString, { zone: "utc" }).setZone(userTimeZone);
+    const now = DateTime.now().setZone(userTimeZone);
+
+    const diffMs = now.diff(created).toMillis();
+    const diffMins = Math.floor(diffMs / 60000);
 
     if (diffMins < 60) {
-      return `${diffMins}분`
+      return `${diffMins}분`;
     } else {
-      const hours = Math.floor(diffMins / 60)
-      const mins = diffMins % 60
-      return `${hours}시간 ${mins}분`
+      const hours = Math.floor(diffMins / 60);
+      const mins = diffMins % 60;
+      return `${hours}시간 ${mins}분`;
     }
-  }
+  };
 
   const isWaiting = queue.status === QueueStatus.WAITING
 
@@ -104,8 +108,8 @@ const QueueItem: React.FC<QueueItemProps> = ({
       ref={setNodeRef}
       style={style}
       className={`p-4 border rounded-xl transition-all duration-200 ${isDragging ? "shadow-lg opacity-75" : ""} ${isWaiting
-          ? "border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-900/20"
-          : "border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-900/20"
+        ? "border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-900/20"
+        : "border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-900/20"
         }`}
     >
       {/* Main content area */}
@@ -130,8 +134,8 @@ const QueueItem: React.FC<QueueItemProps> = ({
 
           <div
             className={`flex-shrink-0 rounded-full p-2 ${isWaiting
-                ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
-                : "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+              ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
+              : "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
               }`}
           >
             <User size={18} />
@@ -157,8 +161,8 @@ const QueueItem: React.FC<QueueItemProps> = ({
             <button
               onClick={() => onStatusChange(queue.id, isWaiting ? QueueStatus.ENTERED : QueueStatus.WAITING)}
               className={`text-sm px-3 py-1.5 rounded-lg flex items-center gap-1 whitespace-nowrap min-w-[70px] justify-center ${isWaiting
-                  ? "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50"
-                  : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:hover:bg-yellow-900/50"
+                ? "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50"
+                : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:hover:bg-yellow-900/50"
                 }`}
             >
               {isWaiting ? (
