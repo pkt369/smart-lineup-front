@@ -493,6 +493,7 @@ const LinePage: React.FC = () => {
     }
   }
 
+  // handleStatusChange 함수를 Promise를 반환하도록 수정
   const handleStatusChange = async (queueId: number, newStatus: QueueStatus) => {
     if (!selectedLine) return
 
@@ -507,10 +508,11 @@ const LinePage: React.FC = () => {
         },
       )
 
-      fetchLineQueues(selectedLine.id)
+      await fetchLineQueues(selectedLine.id)
     } catch (e) {
       console.error(`Error updating queue ${queueId} status:`, e)
       setError("상태 변경에 실패했습니다.")
+      throw e // 에러를 다시 던져서 QueueItem에서 처리할 수 있게 함
     }
   }
 
