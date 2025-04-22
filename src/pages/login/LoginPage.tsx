@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, set } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import config from '../../config';
@@ -12,6 +12,7 @@ interface LoginInput {
 }
 
 const LoginPage: React.FC = () => {
+    const [modalTitle, setModalTitle] = useState<string>('');
     const navigate = useNavigate();
     const { fetchUser } = useAuth();
     const moveSignup = () => {
@@ -48,11 +49,13 @@ const LoginPage: React.FC = () => {
         } catch (e) {
             if (axios.isAxiosError(e)) {
                 if (e.response?.data.status === 'not_verify') {
+                    setModalTitle('이메일 인증 필요');
                     setModalMessage('보안을 위해 이메일 인증이 필요합니다. 가입하신 이메일 주소로 인증 메일을 발송하였으니, 메일함을 확인하시고 안내에 따라 인증을 완료해 주세요. 이메일을 인증하신 후 다시 로그인하시면 정상적으로 이용하실 수 있습니다.');
                     setIsModalOpen(true);
                     return;
                 }
                 if (e.response?.status === 400) { // ✅ Catch duplicate email error
+                    setModalTitle('로그인 실패');
                     setModalMessage('로그인에 실패하였습니다. 이메일과 패스워드를 확인해주세요.');
                     setIsModalOpen(true);
                     return;
@@ -191,7 +194,7 @@ const LoginPage: React.FC = () => {
             <Modal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
-                title="로그인 에러"
+                title={modalTitle}
                 buttonColor="bg-yellow-600 hover:bg-yellow-500"
                 buttonName="뒤로가기"
             >

@@ -183,15 +183,8 @@ const SettingsPage: React.FC = () => {
             await axios.delete(`${config.backend}/user/withdraw`, {
                 withCredentials: true,
             })
-
-            // 탈퇴 성공 시 로그아웃 처리
-            await logout()
-
-            // 홈페이지로 리다이렉트
-            navigate("/")
-
-            // 성공 메시지 (선택적)
             alert("회원 탈퇴가 완료되었습니다. 그동안 서비스를 이용해 주셔서 감사합니다.")
+            window.location.href = "/";
         } catch (error) {
             console.error("회원 탈퇴에 실패했습니다:", error)
             setAlertModal({
