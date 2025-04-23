@@ -4,5 +4,12 @@
             "source": "/(.*)",
             "destination": "/"
         }
+    ],
+    "redirects": [
+        {
+            "source": "https://www.smart-lineup.com/:path*",
+            "destination": "https://smart-lineup.com/:path*",
+            "permanent": true
+        }
     ]
 }
