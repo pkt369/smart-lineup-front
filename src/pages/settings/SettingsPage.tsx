@@ -47,7 +47,7 @@ const SettingsPage: React.FC = () => {
     const [paymentHistory, setPaymentHistory] = useState<any[]>([])
     const [isProcessing, setIsProcessing] = useState(false)
 
-    const { username, email, isAuthenticated, authLoading, logout } = useAuth()
+    const { username, email, isAuthenticated, authLoading } = useAuth()
     const { data: planTypeInfo } = usePlanTypeInfo(true)
 
     // 회원 탈퇴 모달 상태
