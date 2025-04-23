@@ -1,15 +1,21 @@
 {
     "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/"
-        }
+      {
+        "source": "/(.*)",
+        "destination": "/"
+      }
     ],
     "redirects": [
-        {
-            "source": "https://www.smart-lineup.com/:path*",
-            "destination": "https://smart-lineup.com/:path*",
-            "permanent": true
-        }
+      {
+        "source": "/:path*",
+        "has": [
+          {
+            "type": "host",
+            "value": "www.smart-lineup.com"
+          }
+        ],
+        "destination": "https://smart-lineup.com/:path*",
+        "permanent": true
+      }
     ]
-}
+  }
