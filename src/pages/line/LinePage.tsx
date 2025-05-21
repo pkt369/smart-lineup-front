@@ -364,7 +364,7 @@ const LinePage: React.FC = () => {
         // Validate data format
         const validData = jsonData.map((row: any) => {
           // Extract any additional columns as info
-          const { name, Name, phone, Phone, 이름: korName, 전화번호: korPhone, 연락처: korPhone2, ...rest } = row
+          const { name, Name, phone, Phone, 이름: korName, 전화번호: korPhone, 연락처: korPhone2, 핸드폰: korPhone3, 핸드폰번호: korPhone4, ...rest } = row
           const infoObj: Record<string, any> = {}
 
           // Add all other columns to info
@@ -374,7 +374,7 @@ const LinePage: React.FC = () => {
 
           return {
             name: name || Name || korName || "손님",
-            phone: phone || Phone || korPhone || korPhone2 || "",
+            phone: phone || Phone || korPhone || korPhone2 || korPhone3 || korPhone4 || "",
             info: JSON.stringify(Object.keys(infoObj).length > 0 ? infoObj : {}),
           }
         })
